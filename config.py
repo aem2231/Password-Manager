@@ -1,10 +1,11 @@
 import os
 from cryptography.fernet import Fernet
+import manager
+import json
 
 class Config():
     def __init__(self):
         self.encryptionKeyFilePath = "data/encryptionKey.txt"
-        self.passwordFilePath = "data/passwords"
         self.masterPasswordFilePath = "data/masterPassword.txt"
         self.passwords = "data/passwords.json"
 
@@ -26,11 +27,10 @@ class Config():
             return open(self.encryptionKeyFilePath, "rb").read()
                 
     def getMasterPassword(self):
+        fernet = Fernet(self.loadKey())
         if os.path.exists(self.masterPasswordFilePath):
             with open(self.masterPasswordFilePath) as f:
                 encryptedPassword = f.read()
-                key = self.loadKey()
-                fernet = Fernet(key)
                 masterPassword = fernet.decrypt(encryptedPassword)
                 masterPassword = masterPassword.decode()
                 attempts = 0
@@ -47,9 +47,7 @@ class Config():
         else:
             with open(self.masterPasswordFilePath, "wb") as f:
                 masterPassword = str(input("Please choose a master Password: "))
-                key = self.loadKey()
                 masterPassword = masterPassword.encode()
-                fernet = Fernet(key)
                 encryptedPassword = fernet.encrypt(masterPassword)
                 f.write(encryptedPassword)
                 print("Master Password Created!")
@@ -59,6 +57,7 @@ def main():
     config = Config()
     config.getKey()
     config.getMasterPassword()
+    manager.manager()
     
 main()
                     
