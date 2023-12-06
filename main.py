@@ -1,4 +1,3 @@
-import os
 from cryptography.fernet import Fernet
 import json
 
@@ -29,7 +28,7 @@ class Main():
             if sameAccounts > 0:
                 choice = " "
                 while choice.lower()!= "y" and choice.lower()!= "n":
-                    choice = input(f"Account {account} already exists.\nUse {account + str(sameAccounts)} instead? [y/n]")
+                    choice = input(f"Account {account} already exists.\nUse {account + str(sameAccounts)} instead? [y/n]? ")
                     if choice == "y":
                         account = account + str(sameAccounts)
                     else:
