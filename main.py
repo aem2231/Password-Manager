@@ -7,15 +7,34 @@ class Main():
         self.encryptionKeyFilePath = "data/encryptionKey.txt"
         self.passwords = "data/passwords.json"
         self.template = {
+            "ACCOUNT": "",
             "USERNAME": "",
             "PASSWORD": "",
         }
         
+
     def addPassword(self):
         with open(self.encryptionKeyFilePath) as f:
             key = f.read()
         fernet = Fernet(key)
         
+        account = str(input("Enter Account: "))       
+        with open(self.passwords, "r") as f:
+            try:
+                data = json.load(f)
+            except json.decoder.JSONDecodeError:
+                data = []
+                
+            sameAccounts = sum(1 for item in data if item["ACCOUNT"] == account)
+            if sameAccounts > 0:
+                choice = " "
+                while choice.lower()!= "y" and choice.lower()!= "n":
+                    choice = input(f"Account {account} already exists.\nUse {account + str(sameAccounts)} instead? [y/n]")
+                    if choice == "y":
+                        account = account + str(sameAccounts)
+                    else:
+                        self.addPassword()
+                    
         username = str(input("Enter Username: "))
         password = str(input("Enter Password: "))
         encodedUsername = username.encode()
@@ -23,6 +42,7 @@ class Main():
         encryptedUsername = fernet.encrypt(encodedUsername)
         encryptedPassword = fernet.encrypt(encodedPassword)
         data = self.template.copy()
+        data["ACCOUNT"] = str(account)
         data["USERNAME"] = str(encryptedUsername)
         data["PASSWORD"] = str(encryptedPassword)
         try: 
