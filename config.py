@@ -60,8 +60,3 @@ def main():
     manager.manager()
     
 main()
-                    
-  
-                    
-                
-    
