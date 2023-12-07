@@ -54,7 +54,24 @@ class Main():
         with open(self.passwords, "w") as f:
             json.dump(existingData, f, indent=4)
         print("Password Added!")
+        
+    def removePasswords(self):
+        with open(self.encryptionKeyFilePath, "r") as f:
+            key = f.read()
+        fernet = Fernet(key)
+        
+        account = str(input("Enter account to remove: "))
+        with open(self.passwords, "r") as f:           
+            data = json.load(f)
+            
+        newData = [item for item in data if item.get("ACCOUNT")!= account]
+        
+        with open(self.passwords, "w") as f:
+            json.dump(newData, f, indent=4)
+
+        print(newData)
+        print("Password Removed!")
 
 def manager():
     instance = Main()
-    instance.addPassword()
+    instance.removePasswords()
